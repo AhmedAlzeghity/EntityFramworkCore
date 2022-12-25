@@ -1,0 +1,45 @@
+﻿** How to connect Sql DB :
+1 - Install needed packages .
+     Entitframworkcore 
+     .Tools
+     .Sqlserver
+
+2 - ApplicationDbContext : Dbcontext 
+
+3 - Connection String 
+        - Use AppSettings.json
+   OR   _ Override OnConfiguring in ApplicationDbcontext 
+
+         protected override void OnConfiguring(DbContextOptionsBuilder options)=>
+            options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=EFCore;Integrated Security=True");
+5 - Migration 
+   > add-migration intial   .. will be empty (up and down ) if not add dbset 
+   > Remove-Migration       .. Delete migration
+
+4 - Add domain models to applicationDbContext 
+   
+   public DbSet<Employee> Employees {get ; set ;}
+
+   > update-database
+
+----------------------------------------------------------------------------------
+
+* Migration notes :
+  > update-database -migration:0
+  .. will get migration 0 hashname and proceed it
+
+  > remove-migration
+  .. will delete the domain model & migration folder
+
+  > update-database migrationHashName_comment
+  .. go to the state before this migration , 
+      .. Apply in Db
+      .. remove the migrations after this migration 
+
+* Add Sql Statment in migration
+  > add-migration 
+   .. Create empty migration (up & down)
+  - in Up
+     migrationBuilder.Sql("Insert into Employees valuses ... ")
+ _ in Dowm
+      migrationBuilder.Sql("Delete Employees where name = ... ")

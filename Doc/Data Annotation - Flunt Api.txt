@@ -1,0 +1,57 @@
+﻿**** Validation :
+- Data Annotation : 
+  In Domain model 
+ * [Required] 
+
+
+
+
+
+
+
+_ Fluent Api 
+   - Use model builder 
+  
+    public MyDBContext : DbContext 
+     {
+      public Dbset <Blog> Blogs {get; set ;}
+
+      protected override void OnModelCreation (ModelBuilder modelBuilder)
+       {
+       ModelBuilder.Entity<Blog>()
+         .property (b=> b.Name) 
+           .IsRequired ();       //Name required
+       }
+     }
+
+- Adv : More orginized , Clean 
+         &&& Avilable to be in sebrate file and connect 
+
+* Implementation in seprate file : 
+  
+  1 - Folder : Configrations , File : MyEntityEntityTypeConfigration
+  
+  2 -    BlogEntityTypeConfigration:IEntityTypeConfiguration<Blog>    // Implenment IEntityTypeConfiguration<MyEntity>
+          
+          public void configure(EntityTypeBuilder<Blog> builder)   // This methos from IEntityTypeConfiguration
+          {
+            builder
+                    .Property(m => m.Url)
+                    .IsRequired();
+          }
+  
+  3 - ApplicationDbContext 
+
+         protected override void OnModelCreation (ModelBuilder _modelBuilder)
+          {
+                //  ModelBuilder.Entity<Blog>()
+                // .property (b=> b.Name) 
+                // .IsRequired ();       //Name required     >>>>> Become in seprate file 
+
+
+                 new MyEntityEntityTypeConfigration().Configure(_modelBuilder.Entity<Blog>());
+             OR
+                _modelBuilder.ApplyConfigrationFromAssembly(Typeof(MyEntityEntityTypeConfigration).Assembly)
+          }
+         
+
